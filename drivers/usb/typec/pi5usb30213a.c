@@ -217,8 +217,7 @@ static irqreturn_t pi5usb30213a_irq_handler(int irq, void *data)
 	return IRQ_HANDLED;
 }
 
-static int pi5usb30213a_probe(struct i2c_client *client,
-		const struct i2c_device_id *id)
+static int pi5usb30213a_probe(struct i2c_client *client)
 {
 	struct typec_capability typec_cap = { };
 	struct pi5usb30213a *pi5usb30213a;
@@ -312,12 +311,19 @@ static const struct of_device_id dev_ids[] = {
 };
 MODULE_DEVICE_TABLE(of, dev_ids);
 
+
+static const struct i2c_device_id pi5usb30213a_module_id[] = {
+    { "pi5usb30213a", 0 },
+    { }
+};
+
 static struct i2c_driver pi5usb30213a_driver = {
 	.driver = {
 		.name = "pi5usb30213a",
 		.of_match_table = of_match_ptr(dev_ids),
 	},
 	.probe = pi5usb30213a_probe,
+    .id_table = pi5usb30213a_module_id,
 	.remove =  pi5usb30213a_remove,
 };
 
