@@ -2716,7 +2716,7 @@ static int ov5640_set_power(struct ov5640_dev *sensor, bool on)
 		if (ret)
 			return ret;
 
-        usleep(100);
+        fsleep(100);
 
 		ret = ov5640_restore_mode(sensor);
 		if (ret)
