@@ -26,6 +26,8 @@
 #include <media/v4l2-fwnode.h>
 #include <media/v4l2-subdev.h>
 
+#include <linux/delay.h>
+
 /* min/typical/max system clock (xclk) frequencies */
 #define OV5640_XCLK_MIN  6000000
 #define OV5640_XCLK_MAX 54000000
@@ -2713,6 +2715,8 @@ static int ov5640_set_power(struct ov5640_dev *sensor, bool on)
 		ret = ov5640_set_power_on(sensor);
 		if (ret)
 			return ret;
+
+        usleep(100);
 
 		ret = ov5640_restore_mode(sensor);
 		if (ret)
