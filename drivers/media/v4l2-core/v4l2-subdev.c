@@ -1954,10 +1954,14 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
 	unsigned int i;
 	int ret;
 
+    dev_info(dev, "v4l2_subdev_enable_streams1 %u:%u\n",pad, streams_mask);
+
 	/* A few basic sanity checks first. */
 	if (pad >= sd->entity.num_pads)
+    {
+        dev_info(dev, "v4l2_subdev_enable_streams pad >= sd->entity.num_pads %u:%u\n",pad, sd->entity.num_pads);
 		return -EINVAL;
-
+    }
 	if (!streams_mask)
 		return 0;
 

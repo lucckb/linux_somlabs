@@ -38,8 +38,12 @@ static int mxc_isi_crossbar_gasket_enable(struct mxc_isi_crossbar *xbar,
 	unsigned int stream;
 	int ret;
 
+    ev_dbg(xbar->isi->dev, "mxc_isi_crossbar_gasket_enable 1\n");
+
 	if (!gasket_ops)
 		return 0;
+
+    ev_dbg(xbar->isi->dev, "mxc_isi_crossbar_gasket_enable 2\n");
 
 	/*
 	 * Configure and enable the gasket with the frame size and CSI-2 data
@@ -55,6 +59,8 @@ static int mxc_isi_crossbar_gasket_enable(struct mxc_isi_crossbar *xbar,
 		return ret;
 	}
 
+    ev_dbg(xbar->isi->dev, "mxc_isi_crossbar_gasket_enable 3\n")
+
 	/*
 	 * For single or multiple stream, only the first stream be used
 	 * since gasket enable callback be called only once.
@@ -63,6 +69,8 @@ static int mxc_isi_crossbar_gasket_enable(struct mxc_isi_crossbar *xbar,
 	fmt = v4l2_subdev_state_get_stream_format(state, port, stream);
 	if (!fmt)
 		return -EINVAL;
+
+    ev_dbg(xbar->isi->dev, "mxc_isi_crossbar_gasket_enable 4\n")
 
 	gasket_ops->enable(isi, &fd, fmt, port);
 	return 0;
@@ -452,6 +460,8 @@ static int mxc_isi_crossbar_enable_streams(struct v4l2_subdev *sd,
 	u8 stream_index;
 	int ret;
 
+	dev_dbg(xbar->isi->dev, "mxc_isi_crossbar_enable_streams 1\n");
+
 	remote_sd = mxc_isi_crossbar_xlate_streams(xbar, state, pad, streams_mask,
 						   &sink_pad, &sink_streams,
 						   &remote_pad);
@@ -459,6 +469,8 @@ static int mxc_isi_crossbar_enable_streams(struct v4l2_subdev *sd,
 		return PTR_ERR(remote_sd);
 
 	input = &xbar->inputs[sink_pad];
+
+    dev_dbg(xbar->isi->dev, "mxc_isi_crossbar_enable_streams 2\n");
 
 	/*
 	 * TODO: Track per-stream enable counts to support multiplexed
@@ -471,6 +483,7 @@ static int mxc_isi_crossbar_enable_streams(struct v4l2_subdev *sd,
 			return ret;
 	}
 
+    ev_dbg(xbar->isi->dev, "mxc_isi_crossbar_enable_streams 3\n");
 	stream_index = clamp_t(u8, ffs(sink_streams), 1, xbar->num_sources);
 
 	/*
@@ -482,12 +495,16 @@ static int mxc_isi_crossbar_enable_streams(struct v4l2_subdev *sd,
 		return 0;
 	}
 
+    ev_dbg(xbar->isi->dev, "mxc_isi_crossbar_enable_streams 4\n");
+
 	ret = v4l2_subdev_enable_streams(remote_sd, remote_pad, sink_streams);
 	if (ret < 0) {
 		if (!input->enabled_streams)
 			mxc_isi_crossbar_gasket_disable(xbar, sink_pad);
 		return ret;
 	}
+
+    ev_dbg(xbar->isi->dev, "mxc_isi_crossbar_enable_streams 5\n");
 
 	input->enabled_streams |= sink_streams;
 	input->enabled_count[(stream_index - 1)]++;
